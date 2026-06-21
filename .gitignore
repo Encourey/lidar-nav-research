@@ -6,6 +6,7 @@ __pycache__/
 
 # Virtual environments
 venv/
+.venv/
 .env/
 .env.*
 
@@ -17,31 +18,24 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Jupyter Notebook checkpoints
+# Jupyter
 .ipynb_checkpoints/
 
 # Logs
 *.log
 
-# ML / model artifacts (optional but recommended)
-*.h5
-*.pt
-*.pth
-*.onnx
-*.ckpt
+# Large raw datasets — never track these
+data/kitti_raw/
+data/dataset/
 
-# Large datasets (customize for your project)
-data/
-datasets/
-*.csv
-*.zip
-*.tar
-*.gz
-
-# Model outputs (optional)
-outputs/
+# Training run outputs — too large, regenerate instead
+experiments/
 runs/
 
-# Byte-compiled / cached models
-*.ncnn.bin
-*.ncnn.param
+# Test outputs
+outputs/
+
+# Model weights — large binary files, transfer via SCP not git
+models/best_ncnn_model/*.bin
+models/best_ncnn_model/*.param
+models/best_ncnn_model/__pycache__/
