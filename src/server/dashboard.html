@@ -25,6 +25,8 @@
   .card-full { grid-column: 1 / -1; }
   .card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
   .card-value { font-size: 28px; font-weight: 600; }
+  .card-value.sm { font-size: 20px; }
+  .card-sm { padding: 12px 16px; }
   .card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
   .conn-row { display: flex; gap: 8px; align-items: center; }
   .conn-row input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13px; outline: none; }
@@ -60,6 +62,10 @@
   .log .warn-line { color: #f87171; }
   .log .caut-line { color: #fbbf24; }
   @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } .card-full { grid-column: 1; } }
+  .radar-row { grid-column: 1 / -1; display: grid; grid-template-columns: 2fr 1fr; gap: 12px; align-items: stretch; }
+  .side-stats { display: flex; flex-direction: column; gap: 12px; }
+  .side-stats .card { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  @media (max-width: 650px) { .radar-row { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -77,34 +83,33 @@
   <div class="card card-full">
     <div class="card-label">WebSocket Connection</div>
     <div class="conn-row">
-      <input id="wsUrl" value="ws://10.20.107.117:8765" placeholder="ws://PI_IP:8765" />
+      <input id="wsUrl" value="ws://10.30.57.117:8765" placeholder="ws://PI_IP:8765" />
       <button id="connBtn" onclick="toggleConn()">Connect</button>
       <button id="runBtn" class="secondary" onclick="toggleRun()" disabled>Stop</button>
     </div>
-  </div>
-
-  <div class="card card-full" style="margin-top:-4px">
-    <div id="alertBox" class="alert-box alert-ok">
+    <div id="alertBox" class="alert-box alert-ok" style="margin-top:12px">
       <span class="icon">✓</span>
       <span id="alertText">Not connected</span>
     </div>
   </div>
 
-  <div class="card card-full">
-    <div class="card-label" style="margin-bottom:10px">Scan Radar</div>
-    <canvas id="radar" width="700" height="360" style="width:100%;height:auto;display:block"></canvas>
-  </div>
-
-  <div class="card">
-    <div class="card-label">Points / scan</div>
-    <div class="card-value" id="ptsVal">—</div>
-    <div class="hist" id="hist"></div>
-  </div>
-
-  <div class="card">
-    <div class="card-label">Frame</div>
-    <div class="card-value" id="frameVal">—</div>
-    <div class="card-sub" id="fpsVal">— fps</div>
+  <div class="radar-row">
+    <div class="card" style="margin:0">
+      <div class="card-label" style="margin-bottom:10px">Scan Radar</div>
+      <canvas id="radar" width="700" height="360" style="width:100%;height:auto;display:block"></canvas>
+    </div>
+    <div class="side-stats">
+      <div class="card card-sm">
+        <div class="card-label">Points / scan</div>
+        <div class="card-value sm" id="ptsVal">—</div>
+        <div class="hist" id="hist"></div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-label">Frame</div>
+        <div class="card-value sm" id="frameVal">—</div>
+        <div class="card-sub" id="fpsVal">— fps</div>
+      </div>
+    </div>
   </div>
 
   <div class="card card-full">
@@ -119,17 +124,17 @@
   </div>
 
   <div class="card card-full">
-    <div class="log-header">
+    <div class="log-header" onclick="toggleLog()" style="cursor:pointer;user-select:none">
       <div>
-        <div class="card-label" style="margin-bottom:0">Alert Log</div>
+        <div class="card-label" style="margin-bottom:0">Alert Log <span id="logCaret">▸</span></div>
         <span id="warnCount" style="font-size:12px;color:var(--muted)">0 warnings</span>
       </div>
-      <div style="display:flex;gap:8px">
+      <div style="display:flex;gap:8px" onclick="event.stopPropagation()">
         <button class="secondary" onclick="clearLog()">Clear</button>
         <button class="secondary" onclick="exportCSV()">Export CSV</button>
       </div>
     </div>
-    <div class="log" id="logBox">Waiting for connection…</div>
+    <div class="log" id="logBox" style="display:none">Waiting for connection…</div>
   </div>
 
 </div>
@@ -187,6 +192,14 @@ function toggleConn() {
       renderFrame(pendingFrame);
     }
   };
+}
+
+function toggleLog() {
+  const box = document.getElementById('logBox');
+  const caret = document.getElementById('logCaret');
+  const open = box.style.display !== 'none';
+  box.style.display = open ? 'none' : 'block';
+  caret.textContent = open ? '▸' : '▾';
 }
 
 function toggleRun() {
@@ -406,5 +419,4 @@ renderHist();
 </script>
 </body>
 </html>
-
 
